@@ -51,6 +51,31 @@ jobs:
           key: node_modules-${{ hashFiles('**/package-lock.json') }}
 
       - name: Build
-        run:
+        run: |
           npm rebuild node-sass --force
           npm run build -- --colors
+
+  Test:
+    needs: Install
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v2.4.0
+        with:
+          token: ${{ secrets.WOEKFLOW_TOKEN }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v2.4.1
+        with:
+          node-version: 10
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Test
+        run:
+          npm run test
