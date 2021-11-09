@@ -27,8 +27,8 @@ jobs:
           restore-keys: node_modules-
 
       - name: Install with npm
-        run: npm ci
-
+        run: |
+          npm ci
   Build:
     needs: Install
     runs-on: ubuntu-latest
@@ -44,22 +44,16 @@ jobs:
         with:
           node-version: 10
 
-      - name: Cache node modules nad build folder
-        if: ${{ github.ref == 'refs/heads/master'}}
+      - name: Cache node modules
         uses: actions/cache@v2
         with:
-          path: |
-            ~/.npm
-            ./node_modules
-            ./build
-          key: ${{ runner.os }}-build-${{ github.run_id }}
-          restore-keys: ${{ runner.os }}-build-${{ github.run_id }}
+          path: node_modules
+          key: node_modules-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Build
+      - name: build
         run: |
           npm rebuild node-sass --force
           npm run build -- --colors
-
       - name: Cache node modules and build folder
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: actions/cache@v2
@@ -93,13 +87,12 @@ jobs:
           key: node_modules-${{ hashFiles('**/package-lock.json') }}
 
       - name: Test
-        run:
-          npm run test -- --colors
+        run: npm run test -- --colors
 
   Deploy:
-    needs: [ Build, Test ]
+    needs: [Build, Test]
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/master'}}
+    if: ${{ github.ref == 'refs/heads/master' }}
 
     steps:
       - name: Git Checkout
