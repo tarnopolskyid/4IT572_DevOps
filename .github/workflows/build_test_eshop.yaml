@@ -106,4 +106,4 @@ jobs:
             key: ${{ runner.os }}-build-${{ github.run_id }}
 
       - name: Deploy to firebase
-        run: ./node_modules/.bin/firebase deploy --token ${{ secets.FIREBASE_TOKEN }}
+        run: ./node_modules/.bin/firebase deploy --token ${{ secrets.FIREBASE_TOKEN }}
