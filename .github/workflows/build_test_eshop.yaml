@@ -1,7 +1,26 @@
 name: Build and tests our Eshop
 
 on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
   workflow_dispatch:
+    inputs:
+      Install:
+        description: 'Install'
+        required: true
+
+      Build:
+        description: 'Build'
+        required: true
+
+      Test:
+        description: 'Test'
+        required: true
+
 
 jobs:
   # Install all dependencies
