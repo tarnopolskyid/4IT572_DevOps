@@ -98,7 +98,7 @@ jobs:
       - name: Git Checkout
         uses: actions/checkout@v2.4.0
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          token: ${{ secrets.WOEKFLOW_TOKEN }}
 
       - name: Load node modules and run build
         uses: actions/cache@v2
