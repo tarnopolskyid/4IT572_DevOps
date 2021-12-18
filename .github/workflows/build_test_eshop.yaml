@@ -46,8 +46,7 @@ jobs:
           restore-keys: node_modules-
 
       - name: Install with npm
-        run: |
-          npm ci
+        run: npm ci
   Build:
     needs: Install
     runs-on: ubuntu-latest
