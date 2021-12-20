@@ -1,4 +1,4 @@
-name: Build and tests our Eshop
+name: Build and tests Eshop
 
 on:
   push:
