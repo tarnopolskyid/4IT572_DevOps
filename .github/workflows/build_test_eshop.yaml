@@ -111,7 +111,7 @@ jobs:
   Deploy:
     needs: [Build, Test]
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
     steps:
       - name: Git Checkout
@@ -119,14 +119,13 @@ jobs:
         with:
           token: ${{ secrets.CI_TOKEN }}
 
-      - name: Load node modules and run build
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.npm
-            ./node_modules
-            ./build
-          key: ${{ runner.os }}-build-${{ github.run_id }}
-
-      - name: Deploy to firebase
-        run: ./node_modules/.bin/firebase deploy --token ${{ secrets.FIREBASE_TOKEN }}
+      - name: Set up deployment
+        run: |
+          pip3 install ansible==4.0 boto boto3
+          touch ansible/devops.pem
+          echo "$SSH_KEY" > ansible/devops.pem
+          chmod 400 ansible/devops.pem
+          export ANSIBLE_HOST_KEY_CHECKING=False
+          ansible-playbook ansible/ec2_deploy.yml --user ec2-user --key-file ansible/devops.pem
+        env:
+          SSH_KEY: ${{ secrets.PEM_KEY }}
